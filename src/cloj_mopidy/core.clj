@@ -13,9 +13,13 @@
 (defn parse-rpc-response-body [resp]
   (w/keywordize-keys (get (json/read-str (:body resp)) "result")))
 
-(defn rpc-request [method]
-  (client/post mopidy-url {:body (json/write-str {:jsonrpc "2.0" :id 1 :method method})}))
+(defn rpc-request 
+  ([method]
+    (client/post mopidy-url {:body (json/write-str {:jsonrpc "2.0" :id 1 :method method})}))
+  ([method params]
+    (client/post mopidy-url {:body (json/write-str {:jsonrpc "2.0" :id 1 :method method :params params})}))))
 
-(defn mop-rpc [method]
-  (parse-rpc-response-body (rpc-request method)))
+(defn mop-rpc 
+  ([method] (parse-rpc-response-body (rpc-request method)))
+  ([method params] (parse-rpc-response-body (rpc-request method params))))
 
